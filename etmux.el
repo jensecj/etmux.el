@@ -1,6 +1,6 @@
 ;;; etmux.el --- Interact with tmux from emacs
 
-;; Copyright (C) 2018 Jens Christian Jensen
+;; Copyright (C) 2019 Jens Christian Jensen
 
 ;; Author: Jens Christian Jensen <jensecj@gmail.com>
 ;; Keywords: etmux
