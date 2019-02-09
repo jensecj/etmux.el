@@ -1,4 +1,4 @@
-;;; etmux.el --- Interact with tmux from emacs
+;;; etmux.el --- Interact with tmux from emacs -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019 Jens Christian Jensen
 
