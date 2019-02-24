@@ -71,7 +71,7 @@
   "Send a command to the TARGET."
   (interactive)
   (when (etmux-tmux-running?)
-    (etmux--reset-prompt target)
+    (etmux-reset-prompt target)
     (etmux--send-keys target command)))
 
 (defun etmux-list-sessions ()
