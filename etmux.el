@@ -31,6 +31,9 @@
 (require 'dash)
 (require 's)
 
+(defvar etmux-jackin-key "C-x C-c"
+  "Default keybinding for `etmux-jackin's project-wide command.")
+
 (defun etmux-tmux-running? ()
   "Return whether `tmux' is running on the system."
   (zerop (process-file "tmux" nil nil nil "has-session")))
@@ -128,6 +131,37 @@
          (window (completing-read "window: " (etmux-list-windows session)))
          (pane (completing-read "pane: " (etmux-list-panes window))))
     pane))
+
+(defun etmux-jackin ()
+  "Creates a project-wide keybinding to call a command in tmux."
+    (interactive)
+    (let* ((history-file (no-littering-expand-etc-file-name "etmux-history.el"))
+           (etmux-command-history (jens/load-from-file history-file))
+           (pane (etmux-pick-pane))
+           (command (completing-read "command: " etmux-command-history)))
+
+      (unless (member command etmux-command-history)
+        (jens/save-to-file (cons command etmux-command-history) history-file))
+
+      (make-variable-buffer-local 'tmux-cmd)
+      (make-variable-buffer-local 'tmux-pane)
+
+      (let ((class-sym (gensym)))
+        (dir-locals-set-class-variables
+         class-sym
+         `((nil . ((tmux-cmd . ,command)
+                   (tmux-pane . ,pane)))))
+
+        (dir-locals-set-directory-class
+         (projectile-project-root) class-sym))
+
+      (defun etmux-jackin-do nil
+        (interactive)
+        (hack-local-variables)
+        (etmux-C-c tmux-pane)
+        (etmux-run-command tmux-pane tmux-cmd))
+
+      (global-set-key (kbd etmux-jackin-key) #'etmux-jackin-do)))
 
 (provide 'etmux)
 ;;; etmux.el ends here
