@@ -4,7 +4,7 @@
 
 ;; Author: Jens Christian Jensen <jensecj@gmail.com>
 ;; Keywords: etmux
-;; Package-Version: 20190203
+;; Package-Version: 20190525
 ;; Version: 0.2
 ;; Package-Requires: ((emacs "25.1") (dash "2.14.1") (s "1.12.0"))
 
@@ -34,6 +34,9 @@
 
 (defvar etmux-jackin-key "C-x C-c"
   "Default keybinding for `etmux-jackin's project-wide command.")
+
+(defvar etmux-terminal "termite"
+  "Default terminal to use for external commands.")
 
 (defun etmux-tmux-running? ()
   "Return whether `tmux' is running on the system."
@@ -167,6 +170,13 @@
         (message "etmux is not jacked-in to tmux.")))
 
     (global-set-key (kbd etmux-jackin-key) #'etmux-jackin-do)))
+
+(defun etmux-spawn-here ()
+  "Spawn a new tmux window in an external terminal, in the
+current directory."
+  (interactive)
+  (let ((cmd (format "%s -d '%s' -e 'tmux'" etmux-terminal default-directory)))
+    (shell-command cmd)))
 
 (provide 'etmux)
 ;;; etmux.el ends here
