@@ -5,7 +5,7 @@
 ;; Author: Jens Christian Jensen <jensecj@gmail.com>
 ;; Keywords: etmux
 ;; Package-Version: 20190525
-;; Version: 0.2
+;; Version: 0.2.1
 ;; Package-Requires: ((emacs "25.1") (dash "2.14.1") (s "1.12.0"))
 
 
@@ -171,11 +171,17 @@
 
     (global-set-key (kbd etmux-jackin-key) #'etmux-jackin-do)))
 
-(defun etmux-spawn-here ()
+(defun etmux-spawn-here (session-name)
   "Spawn a new tmux window in an external terminal, in the
 current directory."
-  (interactive)
-  (let ((cmd (format "%s -d '%s' -e 'tmux'" etmux-terminal default-directory)))
+  (interactive "P")
+  (let* ((session-cmd "tmux new-session")
+         (session-name (if session-name (completing-read "Session name: " nil)))
+         (session-cmd (if (not (s-blank-str-p session-name))
+                          (format "%s -s %s" session-cmd session-name)
+                        session-cmd))
+         (cmd (format "%s -d '%s' -e '%s' &" etmux-terminal default-directory session-cmd)))
+    (message "etmux command: %s" cmd)
     (shell-command cmd)))
 
 (provide 'etmux)
