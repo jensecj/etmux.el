@@ -180,9 +180,9 @@ current directory."
          (session-cmd (if (not (s-blank-str-p session-name))
                           (format "%s -s %s" session-cmd session-name)
                         session-cmd))
-         (cmd (format "%s -d '%s' -e '%s' &" etmux-terminal default-directory session-cmd)))
+         (cmd (format "%s -d '%s' -e '%s'" etmux-terminal default-directory session-cmd)))
     (message "etmux command: %s" cmd)
-    (shell-command cmd)))
+    (start-process-shell-command "etmux" "etmux" cmd)))
 
 (provide 'etmux)
 ;;; etmux.el ends here
